@@ -27,7 +27,7 @@ exports.localPassport = passport.use(
           return done(err);
         }
         if (!user) {
-          return done(null, new Error("User not found"));
+          return done(new Error("Email not registered"));
         }
 
         const isMatch = await bcrypt.compare(password, user.password);
@@ -43,7 +43,6 @@ exports.localPassport = passport.use(
 
 exports.jwtPassport = passport.use(
   new JwtStrategy(options, (jwt_payload, done) => {
-    console.log(jwt_payload);
     User.findById(jwt_payload._id, (err, user) => {
       if (err) {
         return done(err, false);
@@ -58,3 +57,7 @@ exports.jwtPassport = passport.use(
 );
 
 exports.verifyUser = passport.authenticate("jwt", { session: false });
+exports.verifyAdmin = (req, res, next) => {
+  if (req.user.isAdmin === false) return res.status(401).send("Unauthorised");
+  else next();
+};

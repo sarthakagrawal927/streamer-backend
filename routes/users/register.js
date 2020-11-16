@@ -16,15 +16,20 @@ router.post(
     ).isLength({ min: 6 }),
     check("confirmPassword").custom((value, { req }) => {
       if (value !== req.body.password) {
-        throw new Error("Password Confirmation does not match password");
+        throw new Error("passwords don't match");
       }
       return true;
     }),
   ],
-  async (req, res) => {
+  async (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+      return res.status(400).json({
+        success: false,
+        errors: errors.array().map((error) => {
+          return error.msg;
+        }),
+      });
     }
 
     const { name, email, password } = req.body;
@@ -34,7 +39,7 @@ router.post(
       if (user) {
         return res
           .status(400)
-          .json({ success: false, errors: [{ msg: "Email is already used" }] });
+          .json({ success: false, errors: ["Email is already used"] });
       }
 
       user = new User({
@@ -50,7 +55,7 @@ router.post(
       return res.json({ success: true });
     } catch (err) {
       console.error(err.message);
-      res.status(500).send("Server error");
+      return res.status(500).json({ success: false, erros: ["server error"] });
     }
   }
 );
