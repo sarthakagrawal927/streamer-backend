@@ -2,7 +2,7 @@ const express = require("express");
 const passport = require("passport");
 const authenticate = require("../../config/authenticate");
 
-const { check, validationResult } = require("express-validator");
+const { check, validationResult, cookie } = require("express-validator");
 
 const router = express.Router();
 
@@ -18,11 +18,14 @@ router.post(
   async (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
+      console.log(errors);
       return res.status(400).json({ success: false, errors: errors.array() });
     }
-    passport.authenticate("local", (err, user, info) => {
+
+    passport.authenticate("local user", (err, user, info) => {
       try {
         if (err) {
+          console.log(err);
           return res
             .status(400)
             .json({ success: false, errors: [err.message] });
