@@ -10,6 +10,9 @@ const AdminSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  college:{
+    type:String,
+  }
   isSuperAdmin: {
     type: Boolean,
     default: false,

@@ -2,7 +2,7 @@ const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 const JwtStrategy = require("passport-jwt").Strategy;
 const ExtractJwt = require("passport-jwt").ExtractJwt;
-const User = require("../models/user");
+const Admin = require("../models/admin");
 const keys = require("./secret");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
@@ -13,7 +13,7 @@ const options = {
 };
 
 exports.getToken = function (user) {
-  return jwt.sign(user, keys.secretKey, { expiresIn: 360000 });
+  return jwt.sign(user, keys.secretKey, { expiresIn: 3600 });
 };
 
 exports.localPassport = passport.use(
@@ -22,7 +22,7 @@ exports.localPassport = passport.use(
       usernameField: "email",
     },
     async (email, password, done) => {
-      User.findOne({ email }, async (err, user) => {
+      Admin.findOne({ email }, async (err, user) => {
         if (err) {
           return done(err);
         }
@@ -43,7 +43,7 @@ exports.localPassport = passport.use(
 
 exports.jwtPassport = passport.use(
   new JwtStrategy(options, (jwt_payload, done) => {
-    User.findById(jwt_payload._id, (err, user) => {
+    Admin.findById(jwt_payload._id, (err, user) => {
       if (err) {
         return done(err, false);
       }
