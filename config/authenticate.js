@@ -17,6 +17,7 @@ exports.getToken = function (user) {
 };
 
 exports.localPassport = passport.use(
+  "local user",
   new LocalStrategy(
     {
       usernameField: "email",
@@ -26,6 +27,7 @@ exports.localPassport = passport.use(
         if (err) {
           return done(err);
         }
+
         if (!user) {
           return done(new Error("Email not registered"));
         }
@@ -37,11 +39,12 @@ exports.localPassport = passport.use(
         }
         return done(null, user);
       });
-    },
-  ),
+    }
+  )
 );
 
 exports.jwtPassport = passport.use(
+  "jwt user",
   new JwtStrategy(options, (jwt_payload, done) => {
     User.findById(jwt_payload._id, (err, user) => {
       if (err) {
@@ -53,7 +56,7 @@ exports.jwtPassport = passport.use(
         return done(null, false);
       }
     });
-  }),
+  })
 );
 
-exports.verifyUser = passport.authenticate("jwt", { session: false });
+exports.verifyUser = passport.authenticate("jwt user", { session: false });

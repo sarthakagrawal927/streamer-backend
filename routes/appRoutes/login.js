@@ -2,7 +2,7 @@ const express = require("express");
 const passport = require("passport");
 const authenticate = require("../../config/authenticate");
 
-const { check, validationResult } = require("express-validator");
+const { check, validationResult, cookie } = require("express-validator");
 
 const router = express.Router();
 
@@ -12,7 +12,7 @@ router.post(
     check("email", "Please include a valid email").isEmail(),
     check(
       "password",
-      "Please enter a password with 6 or more characters",
+      "Please enter a password with 6 or more characters"
     ).isLength({ min: 6 }),
   ],
   async (req, res, next) => {
@@ -21,7 +21,8 @@ router.post(
       console.log(errors);
       return res.status(400).json({ success: false, errors: errors.array() });
     }
-    passport.authenticate("local", (err, user, info) => {
+
+    passport.authenticate("local user", (err, user, info) => {
       try {
         if (err) {
           console.log(err);
@@ -43,7 +44,7 @@ router.post(
         return res.status(400).json({ success: false, errors: [err] });
       }
     })(req, res, next);
-  },
+  }
 );
 
 module.exports = router;

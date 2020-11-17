@@ -1,6 +1,6 @@
 const express = require("express");
 const { check, validationResult } = require("express-validator");
-const User = require("../../models/user");
+const Admin = require("../../models/admin");
 const bcrypt = require("bcryptjs");
 
 const router = express.Router();
@@ -10,18 +10,10 @@ router.post(
   [
     check("name", "name is required").not().isEmpty(),
     check("email", "Please include a valid email").isEmail(),
-    check("college", "college is required").not().isEmpty(),
-    check("phone", "phone number should be 10 digits").isLength(10),
     check(
       "password",
       "Please enter a password with 6 or more characters"
     ).isLength({ min: 6 }),
-    check("confirmPassword").custom((value, { req }) => {
-      if (value !== req.body.password) {
-        throw new Error("passwords don't match");
-      }
-      return true;
-    }),
   ],
   async (req, res, next) => {
     const errors = validationResult(req);
@@ -34,28 +26,27 @@ router.post(
       });
     }
 
-    const { name, email, college, phone, password } = req.body;
+    const { name, email, college, password } = req.body;
 
     try {
-      let user = await User.findOne({ email });
-      if (user) {
+      let admin = await Admin.findOne({ email });
+      if (admin) {
         return res
           .status(400)
           .json({ success: false, errors: ["Email is already used"] });
       }
 
-      user = new User({
+      admin = new Admin({
         name,
         email,
-        phone,
         college,
         password,
       });
 
       const salt = await bcrypt.genSalt(10);
-      user.password = await bcrypt.hash(password, salt);
+      admin.password = await bcrypt.hash(password, salt);
 
-      await user.save();
+      await admin.save();
       return res.json({ success: true });
     } catch (err) {
       console.error(err.message);

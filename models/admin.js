@@ -1,6 +1,10 @@
 const mongoose = require("mongoose");
 
 const AdminSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+  },
   email: {
     type: String,
     required: true,
@@ -10,9 +14,10 @@ const AdminSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  college:{
-    type:String,
-  }
+  college: {
+    type: String,
+    deafult: "",
+  },
   isSuperAdmin: {
     type: Boolean,
     default: false,

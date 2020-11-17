@@ -17,43 +17,46 @@ exports.getToken = function (user) {
 };
 
 exports.localPassport = passport.use(
+  "local admin",
   new LocalStrategy(
     {
       usernameField: "email",
     },
     async (email, password, done) => {
-      Admin.findOne({ email }, async (err, user) => {
+      Admin.findOne({ email }, async (err, admin) => {
         if (err) {
           return done(err);
         }
-        if (!user) {
+
+        if (!admin) {
           return done(new Error("Email not registered"));
         }
 
-        const isMatch = await bcrypt.compare(password, user.password);
+        const isMatch = await bcrypt.compare(password, admin.password);
 
         if (!isMatch) {
           return done(new Error("Incorrect password"));
         }
-        return done(null, user);
+        return done(null, admin);
       });
-    },
-  ),
+    }
+  )
 );
 
 exports.jwtPassport = passport.use(
+  "jwt admin",
   new JwtStrategy(options, (jwt_payload, done) => {
-    Admin.findById(jwt_payload._id, (err, user) => {
+    Admin.findById(jwt_payload._id, (err, admin) => {
       if (err) {
         return done(err, false);
       }
-      if (user) {
-        return done(null, user);
+      if (admin) {
+        return done(null, admin);
       } else {
         return done(null, false);
       }
     });
-  }),
+  })
 );
 
-exports.verifyUser = passport.authenticate("jwt", { session: false });
+exports.verifyAdmin = passport.authenticate("jwt admin", { session: false });
