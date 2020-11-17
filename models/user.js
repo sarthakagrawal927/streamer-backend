@@ -14,10 +14,15 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  isAdmin: {
+    type: Boolean,
+    default: false,
+  },
   date: {
     type: Date,
     default: Date.now,
   },
+  vitals: {},
 });
 
 module.exports = User = mongoose.model("User", UserSchema);

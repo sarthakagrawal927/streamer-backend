@@ -23,24 +23,22 @@ router.post(
     passport.authenticate("local", (err, user, info) => {
       try {
         if (err) {
-          return next(err);
+          return res
+            .status(400)
+            .json({ success: false, errors: [err.message] });
         }
 
-        if (!user) {
-          const error = new Error("Not registered.");
-          return next(error);
-        }
-
-        req.login(user, { session: false }, (error) => {
-          if (error) return next(error);
+        req.login(user, { session: false }, (err) => {
+          if (err)
+            return res.status(400).json({ success: false, errors: [err] });
 
           const body = { _id: user._id, email: user.email };
           const token = authenticate.getToken(body);
 
           return res.json({ success: true, token: token });
         });
-      } catch (error) {
-        return next(error);
+      } catch (err) {
+        return res.status(400).json({ success: false, errors: [err] });
       }
     })(req, res, next);
   }
