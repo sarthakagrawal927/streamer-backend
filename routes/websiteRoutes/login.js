@@ -12,7 +12,7 @@ router.post(
     check("email", "Please include a valid email").isEmail(),
     check(
       "password",
-      "Please enter a password with 6 or more characters"
+      "Please enter a password with 6 or more characters",
     ).isLength({ min: 6 }),
   ],
   async (req, res, next) => {
@@ -42,13 +42,19 @@ router.post(
           const body = { _id: admin._id, email: admin.email };
           const token = authenticate.getToken(body);
 
-          return res.json({ success: true, token: token });
+          if (admin.isSuperAdmin)
+            return res.json({ success: true, token: "super" + token });
+          else
+            return res.json({
+              success: true,
+              token: token,
+            });
         });
       } catch (err) {
         return res.status(400).json({ success: false, errors: [err] });
       }
     })(req, res, next);
-  }
+  },
 );
 
 module.exports = router;
