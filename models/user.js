@@ -32,6 +32,10 @@ const UserSchema = new mongoose.Schema({
     default: "OKAY",
     required: true,
   },
+  regNo: {
+    type: String,
+    required: true,
+  },
   vitals: {},
 });
 

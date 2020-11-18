@@ -14,7 +14,7 @@ router.post(
     check("phone", "phone number should be 10 digits").isLength(10),
     check(
       "password",
-      "Please enter a password with 6 or more characters"
+      "Please enter a password with 6 or more characters",
     ).isLength({ min: 6 }),
     check("confirmPassword").custom((value, { req }) => {
       if (value !== req.body.password) {
@@ -34,7 +34,7 @@ router.post(
       });
     }
 
-    const { name, email, college, phone, password } = req.body;
+    const { name, email, college, phone, password, regNo } = req.body;
 
     try {
       let user = await User.findOne({ email });
@@ -50,6 +50,7 @@ router.post(
         phone,
         college,
         password,
+        regNo,
       });
 
       const salt = await bcrypt.genSalt(10);
@@ -61,7 +62,7 @@ router.post(
       console.error(err.message);
       return res.status(500).json({ success: false, erros: ["server error"] });
     }
-  }
+  },
 );
 
 module.exports = router;
