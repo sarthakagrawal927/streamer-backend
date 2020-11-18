@@ -8,11 +8,11 @@ const router = express.Router();
 router.post(
   "/",
   [
-    check("name", "name is required").not().isEmpty(),
+    // check("name", "name is required").not().isEmpty(),
     check("email", "Please include a valid email").isEmail(),
     check(
       "password",
-      "Please enter a password with 6 or more characters"
+      "Please enter a password with 6 or more characters",
     ).isLength({ min: 6 }),
   ],
   async (req, res, next) => {
@@ -52,7 +52,7 @@ router.post(
       console.error(err.message);
       return res.status(500).json({ success: false, erros: ["server error"] });
     }
-  }
+  },
 );
 
 module.exports = router;
