@@ -19,7 +19,7 @@ const AdminSchema = new mongoose.Schema({
   },
   isSuperAdmin: {
     type: Boolean,
-    default: true,
+    default: false,
   },
   date: {
     type: Date,
