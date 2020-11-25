@@ -1,4 +1,5 @@
 module.exports = {
-  mongoURI: "mongodb://localhost:27017/Streamer",
+  mongoURI:
+    "mongodb+srv://Sarthak:sarthak123@cluster0.586tw.mongodb.net/streamer?retryWrites=true&w=majority",
   secretKey: "dsjakjsfglaewieowrutioefdslknvkjbkxncknklsdjfhoiehgiuerds",
 };

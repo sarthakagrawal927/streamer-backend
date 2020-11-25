@@ -42,13 +42,12 @@ router.post(
           const body = { _id: admin._id, email: admin.email };
           const token = authenticate.getToken(body);
 
-          if (admin.isSuperAdmin)
-            return res.json({ success: true, token: "super" + token });
-          else
-            return res.json({
-              success: true,
-              token: token,
-            });
+          return res.json({
+            success: true,
+            isSuperAdmin: admin.isSuperAdmin,
+            college: admin.college,
+            token: token,
+          });
         });
       } catch (err) {
         return res.status(400).json({ success: false, errors: [err] });
