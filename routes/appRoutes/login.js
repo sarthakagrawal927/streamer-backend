@@ -19,7 +19,12 @@ router.post(
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       console.log(errors);
-      return res.status(400).json({ success: false, errors: errors.array() });
+      return res.status(400).json({
+        success: false,
+        errors: errors.array().map((error) => {
+          return error.msg;
+        }),
+      });
     }
 
     passport.authenticate("local user", (err, user, info) => {
